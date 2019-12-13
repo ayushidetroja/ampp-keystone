@@ -44,16 +44,18 @@ passport.deserializeUser(function(id, done) {
 	// });
 });
 console.log("session", keystone.session.signin);
+var profileData;
 passport.use(
 	new FacebookStrategy(
 		{
 			clientID: process.env.FACEBOOK_APP_ID,
 			clientSecret: process.env.FACEBOOK_APP_SECRET,
 			callbackURL: "http://localhost:3000/auth/facebook/callback",
-			profileFields: ["id", "emails", "name"]
+			profileFields: ["id", "emails", "name", "gender"]
 		},
 		function(accessToken, refreshToken, profile, cb) {
 			console.log("PROFILE", profile);
+			profileData = profile;
 			return cb(null, profile);
 		}
 	)
@@ -103,7 +105,9 @@ exports = module.exports = function(app) {
 	// sign in with facebook
 	app.get(
 		"/auth/facebook",
-		passport.authenticate("facebook", { scope: ["email"] })
+		passport.authenticate("facebook", {
+			scope: ["email"]
+		})
 	);
 	app.get(
 		"/auth/facebook/callback",
@@ -112,7 +116,99 @@ exports = module.exports = function(app) {
 		}),
 		function(req, res) {
 			console.log("worked");
-			res.redirect("/");
+			var locals = res.locals;
+			// var onSuccess = function() {
+			// 	if (req.query && req.query.from) {
+			// 		res.redirect(req.query.from);
+			// 	} else if (!req.user.isActive) {
+			// 		keystone.session.signout(req, res, function() {
+			// 			req.flash(
+			// 				"error",
+			// 				"Your username or password were incorrect, please try again."
+			// 			);
+			// 			return next();
+			// 		});
+			// 	} else {
+			// 		if (!req.user.isVerified === true) {
+			// 			req.flash(
+			// 				"error",
+			// 				'Welcome back to AMPP. Please <a href="/verify-account">verify your email</a> to add content.'
+			// 			);
+			// 		}
+			// 		return res.redirect("/artist/" + req.user._id); // per https://github.com/eliataylor/ampp-keystone/issues/94
+			// 	}
+			// };
+
+			// var onFail = function() {
+			// 	req.flash(
+			// 		"error",
+			// 		"Your username or password were incorrect, please try again."
+			// 	);
+			// 	console.log("error");
+			// 	return res.redirect("/");
+			// };
+			// keystone.session.signin(
+			// 	{
+			// 		email: "mt.sparkle031@gmail.com",
+			// 		password: "sparkle1#"
+			// 	},
+			// 	req,
+			// 	res,
+			// 	onSuccess,
+			// 	onFail
+			// );
+
+			var userData = {
+				name: `${profileData._json.first_name} ${profileData._json.last_names}`,
+				email: profileData._json.email,
+				isAdmin: false,
+				isVerified: false,
+				gender: profileData.gender ? profileData.gender : "",
+				medium: [],
+				phone: "",
+				locale: "",
+				password: profileData._json.id
+			};
+			var newUser = new User(userData);
+			newUser.save(function(err) {
+				if (err) {
+					console.log("Error Inserting New Data");
+					if (err.name == "ValidationError") {
+						for (field in err.errors) {
+							req.flash("error", err.errors[field].message);
+						}
+					} else {
+						console.log(err);
+					}
+				}
+
+				res.locals.newUser = newUser;
+				req.user = newUser;
+				return console.log(err);
+			});
+
+			var onSuccess = function() {
+				return res.redirect("/"); // per https://github.com/eliataylor/ampp-keystone/issues/37
+				// return res.redirect('/artist/' + res.locals.newUser._id); //CHECK where to redirect to
+			};
+
+			var onFail = function(e) {
+				req.flash(
+					"error",
+					"There was a problem automatically signing you in, please try again."
+				);
+				return console.log("fail", e);
+			};
+
+			keystone.session.signin(
+				{ email: profileData._json.email },
+				req,
+				res,
+				onSuccess,
+				onFail
+			);
+
+			// res.redirect("/");
 		}
 	);
 
