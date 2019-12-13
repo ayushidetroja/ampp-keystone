@@ -1,0 +1,42 @@
+{% extends "../layouts/default.twig" %}
+
+{% block content %}
+	{% import "../macros/utils.twig" as utils %}
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
+	<div class="container">
+    <div class="row subscriber-main">	
+    {% if users is empty %}
+		<h2>No following  user found </h2>
+	{% else %}
+
+{%for user in users %}
+
+ <div class=" col-6 col-md-4">
+ <a class="contentName" href="/artist/{{user._id}}" >
+	<div class="subscriberimg-section">
+
+	<div class="subscriberImg">
+		<div class="circle-img" style="background-image:url('{{user.image.url != null ? user.image.url :'/images/iconIGxxxhdpi.png'}}');">
+		</div>
+		{# <img class="card-img-top img-responsive " src="{{user.image.url != null ? user.image.url :'/images/iconIGxxxhdpi.png'}}" alt="Card image cap"> #}
+	</div>
+    <div class="card-body">
+		<h2 class="card-title subscriber_text"><a class="contentName" href="/artist/{{user._id}}" >{{user.name.first }}   {{user.name.last}}</a></h2>
+	</div>
+	</div>
+	</a>
+	</div>
+
+
+
+  
+
+{% endfor%}
+{% endif %}
+</div>
+</div>
+
+	
+
+	
+{% endblock %}

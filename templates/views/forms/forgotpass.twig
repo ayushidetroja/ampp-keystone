@@ -1,0 +1,16 @@
+{% extends "../../layouts/default.twig" %}
+
+{% block content %}
+	<div class="container-fluid" >
+		<form method="post" role="forgotpass" novalidate="novalidate" class="forgotpass-form">
+			<input type="hidden" name="action" value="forgotpass">
+			<div class="form-group">
+				<label for="forgotpass-email" class="sr-only">Email</label>
+				<input type="email" name="forgotpass_email" placeholder="Email" id="forgotpass-email" class="form-control">
+			</div>
+
+		<button type="submit" class="btn btn-action btn-submit">Submit</button>
+	</form>
+	</p>
+</div>
+{% endblock %}

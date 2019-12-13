@@ -1,0 +1,217 @@
+{% import "../mixins/flash-messages.twig" as FlashMessages %}
+{% spaceless %}
+	<!doctype html>
+	<html>
+		<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge">
+			{% if item and item.title %}
+					<meta property="og:title" content="{{item.title}}">
+					<meta property="og:description" content="by {{ item.author.name.first ~' '~ item.author.name.last }}">
+					{% if item.image.url %}
+					<meta property="og:image" content="{{ item.image.url }}">
+					{% endif %}
+					<meta property="og:url" content="{{full_url}}">
+
+					<meta name="twitter:title" content="{{item.title}}">
+					<meta property="twitter:description" content="by {{ item.author.name.first ~' '~ item.author.name.last }}">
+					{% if item.image.url %}
+					<meta name="twitter:image" content="{{ item.image.url }}">
+					{% endif %}
+					<meta name="twitter:card" content="summary_large_image">
+			{% endif %}
+
+			<title>{{ title|default(AMPP) }}</title>
+			<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+			<link href="/styles/site.css" rel="stylesheet">
+
+
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+			<!--[if lt IE 9]> <script src="//cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.js"></script> <script src="//cdn.jsdelivr.net/respond/1.4.2/respond.min.js"></script> <![endif]-->
+			{% block css %}{% endblock %}
+			{% block head %}{% endblock %}
+		</head>
+		<body class="{{section}} {% if medium is defined and medium.slug is not empty %} {{medium.slug}} {% endif %}">
+			<div id="App" class="container-fluid no-gutters p-0" >
+				{% if (user is defined) and (user.isVerified == false) %}
+					<div class="alert alert-info verify-email" role="alert">Your account is not verified. Please click on link provided in email to verify your account or click <a href="/verify-account">Resend link </a> to get another email for verification.</div>
+				{% endif %}
+				<div id="header" class="row align-items-start">
+					<div role="navigation" class="navbar navbar-toggleable-md fixed-top navbar-light {% if (user is defined) and (user.isVerified == false) %} mt-50 {% endif %}" >
+						<a class="navbar-brand" href="/">
+							<img class="topLogo" alt="logo" src="/images/logo.png"/>
+						</a>
+
+						<span class="navbar-text">
+							{% for link in mediums %}
+
+								{% set linkClass = '' %}
+								{% if link.slug == medium.slug %}
+									{% set linkClass = ' class="active" ' %}
+								{% endif %}
+
+								<a {{linkClass}} href="/{{ link.slug }}">{{ link.name }}</a>{% if loop.index < (mediums.length - 1) %},
+								{% elseif loop.index == (mediums.length - 1) %}
+									&amp;
+								{% endif %}
+
+							{% endfor %}
+						</span>
+
+						<a href="#sidebar" data-toggle="collapse" data-target="#sidebar" aria-expanded="false" aria-label="Toggle Menu" aria-controls="sidebar" class="">
+							<span class="sr-only">A.M.P.P Star Menu</span>
+							<span class="navbar-toggler-icon"></span>
+						</a>
+					</div>
+					<div class="clear clearfix"></div>
+				</div>
+				<div id="master" class="container-fluid row align-items-center justify-content-center pl-0 pr-0 no-gutters flex-md-nowrap" style="flex-grow:1" >
+
+
+								<div id="content" style="flex-grow:1" class="col align-items-center justify-content-center">
+									{% block intro %}{% endblock %}
+									{{ FlashMessages.renderMessages(messages) }}
+									{% block content %}{% endblock %}
+								</div>
+
+								<div id="sidebar" class="col-md-3 col-sm-12 collapse navbar-collapse" >
+
+								<button type="button" class="close m-2" aria-label="Close Menu"
+ 									data-toggle="collapse" data-target="#sidebar" aria-controls="sidebar" >
+ 								  <img src="/images/closeBtn.png" />
+ 								</button>
+
+ 								{% if user is defined %}
+ 								 <div class="row align-items-center justify-content-center pt-2">
+ 										<div class="col ml-1" style="max-width:84px;">
+ 							        <a href="/artist/{{user._id}}" class="image rounded-circle" >
+ 													{% if user.image is not empty and user.image.url %}
+ 														<img src="{{ user.image.url }}" class="img img-responsive full-width rounded-circle" />
+ 													{% elseif user.gender == 'female' %}
+ 														<img src="/images/avitar-female.png" class="img img-responsive full-width rounded-circle" style="background:#fff" />
+ 													{% else %}
+ 														<img src="/images/avitar-male.png" class="img img-responsive full-width rounded-circle" style="background:#fff" />
+ 													{% endif %}
+ 							        </a>
+ 										</div>
+ 										<h3 class="col mr-1"><a href="/artist/{{user._id}}">{{user.name.first}}</a></h3>
+ 									</div>
+ 								{% endif %}
+ 								<ul class="menuGroup">
+ 									{% for link in mediums %}
+ 										{% set linkClass = ' class="menuItem"' %}
+ 										{% if link.slug == section %}
+ 											{% set linkClass = ' class="menuItem active" ' %}
+ 										{% endif %}
+ 										<li {{ linkClass | striptags }}>
+ 											<a href="/{{ link.slug }}">
+ 												<i><img height="15" src="{{link.icon.url}}" class="icon"/></i>
+ 												Search
+ 												{{ link.name }}
+ 											</a>
+ 										</li>
+ 									{% endfor %}
+ 								</ul>
+ 								<hr />
+ 								{% if user is defined %}
+ 									<ul class="menuGroup">
+ 										<li class="menuItem"><a href="/users">
+ 													<i>&nbsp;</i>
+ 													Users
+ 													
+ 												</a></li>
+ 									<li class="menuItem"><a href="/subscription">
+ 													<i>&nbsp;</i>
+ 													Subscriptions
+ 													
+ 												</a></li>
+ 											
+ 										{% for link in mediums %}
+ 											<li class="menuItem">
+ 												<a href="/{{link.slug}}/add">
+ 													<i>&nbsp;</i>
+ 													Upload your
+ 													{{ link.name }}
+ 												</a>
+ 											</li>
+ 									{% endfor %}
+ 									
+ 									</ul>
+ 							 {% endif %}
+ 									<ul class="menuGroup">
+ 										<li class="menuItem">
+ 											<i>&nbsp;</i>
+ 											<a href="/about">About</a>
+ 										</li>
+										<li class="menuItem">
+ 											<i>&nbsp;</i>
+ 											<a href="/about/gettingstarted">Getting Started</a>
+ 										</li>
+ 										{% if user is defined %}
+ 											<li class="menuItem">
+ 												<i>&nbsp;</i>
+ 												<a href="/signout">Sign Out</a>
+ 											</li>
+ 										{% else %}
+ 											<li class="menuItem">
+ 												<i>&nbsp;</i>
+ 												<a href="/join">Register</a>
+ 											</li>
+ 											<li class="menuItem">
+ 												<i>&nbsp;</i>
+ 												<a href="/signin">Sign In</a>
+ 											</li>
+ 										{% endif %}
+ 									</ul>
+									<div class="spacer">&nbsp;</div>
+ 									<div class="clearfix"></div>
+ 								</div>
+					</div>
+
+					<div id="footer" class="row align-items-end container-fluid">
+						<div class="footer-inner">
+							<span class="copyrights">&copy; AMPP Star 2019 </span>
+							-
+							<a style="color:#fff" href="/about/termsandconditions" >Terms</a>
+							<span class="socialIcons">
+								<a href="https://www.instagram.com/ampp_star/" target="_blank">
+									<img src="/images/iconIGxhdpi.png" alt="Instagram"/>
+								</a>
+								<a href="https://www.facebook.com/amppstar/" target="_blank">
+									<img src="/images/iconFBxhdpi.png" alt="Facebook"/>
+								</a>
+							</span>
+						</div>
+					</div>
+
+				</div>
+
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+				<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+				<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+				<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+				</script>
+
+				{% block js %}{% endblock %}
+
+				{% block dashtools %}
+				<script type="text/javascript" src="/dist/isotope.pkgd.min.js" ></script>
+				<script src="/js/frontend.js"></script>
+				{% endblock %}
+
+				<!-- Global site tag (gtag.js) - Google Analytics -->
+				<script async src="https://www.googletagmanager.com/gtag/js?id=UA-135086334-1"></script>
+				<script>
+				  window.dataLayer = window.dataLayer || [];
+				  function gtag(){dataLayer.push(arguments);}
+				  gtag('js', new Date());
+					{% if (user is defined) and (user.isVerified == false) %}
+					gtag('set', {'user_id': {{user._id}}}); // Set the user ID using signed-in user_id.
+					{% endif %}
+				  gtag('config', 'UA-135086334-1');
+				</script>
+
+			</body>
+		</html>
+	{% endspaceless %}

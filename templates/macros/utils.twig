@@ -1,0 +1,8 @@
+{% macro imgAtts(obj) %}
+  {% if obj.width > 0 %}
+  width="{{obj.width}}"
+  {% endif %}
+  {% if obj.height > 0 %}
+  height="{{obj.height}}"
+  {% endif %}
+{% endmacro %}

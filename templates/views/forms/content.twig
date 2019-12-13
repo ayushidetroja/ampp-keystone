@@ -1,0 +1,110 @@
+{% extends "../../layouts/default.twig" %} {% block intro %}
+<div class="container-fluid">
+	{% if (item is defined and item._id) %}
+	<h2>{{item.title}}</h2>
+	{% else %}
+	<blockquote class="blockquote post-content">
+		<h1 class="text-center mt-4 font-weight-bold">Post your {{medium.name}}</h1>
+	</blockquote>
+	{% endif %}
+</div>
+{% endblock %} {% block content %}
+<div class="container-fluid mt-4">
+	<div class="row">
+		<div class="col-sm-6 mx-auto">
+			{% if (item is defined and item._id) %}
+			<form method="POST" role="submit" action="/{{medium.slug}}/edit/{{item._id}}" class="post-form" enctype="multipart/form-data">
+				<input type="hidden" name="id" value="{{item._id}}"> {% else %}
+				<form method="POST" role="submit" action="/{{medium.slug}}/add" class="post-form" enctype="multipart/form-data">
+					{% endif %}
+
+					<div class="form-group">
+						<label for="form-title" class="sr-only">Title</label>
+						<input type="text" name="title" placeholder="Title" id="form-title" value="{{item.title}}" class="form-control rounded">
+					</div>
+
+					<div class="form-group mt-4">
+						<label for="form-state" class="sr-only">State</label>
+						<select class="form-control" name="state" id="form-state">
+							<option value="draft">Private</option>
+							<option value="published" {% if item.state=='published' %}selected{% endif %}>Public</option>
+						</select>
+					</div>
+
+					<div class="form-group mt-4">
+						<h5>Types of Art</h5>
+						{% for link in medium.genre %}
+						<div class="form-check col-sm-6 float-left mt-2 pl-0">
+							<label class="form-check-label">
+								<input class="form-check-input" name="genre[]" type="checkbox" value="{{link._id}}" {% if link._id in item.genre %}checked{%
+								 endif %}> {{link.name}}
+							</label>
+						</div>
+						{% endfor %}
+					</div>
+
+					<div class="clearfix"></div>
+					<div class="form-group mt-4">
+						<label for="content" for="form-content" class="sr-only">Short Description</label>
+						<textarea class="form-control" name="content" placeholder="Short description" id="form-content" rows="5">{{item.content.extended}}</textarea>
+					</div>
+
+					{% if (medium.slug == 'music') %}
+						<div class="form-group mt-5">
+							<label for="form-media">MP3 / MP4</label>
+							<input type="file" class="form-control-file" id="form-media" name="media_upload">
+						</div>
+
+						{% if item.media.url %}
+							<div class="media-wrap">
+								{% if item.media.mimetype == 'video/mp4' %}
+									<video controls controlsList="nodownload" >
+											<source src="{{ item.media.url }}" type="video/mp4">
+												Your browser does not support the video element.
+									</video>
+								{% else %}
+
+									<audio controls controlsList="nodownload">
+											<source src="{{ item.media.url }}" type="audio/mpeg">
+										Your browser does not support the audio element.
+									</audio>
+
+								{% endif %}
+							</div>
+						{% endif %}
+
+					{% elseif medium.slug == 'poetry' %}
+					<script src="/tinymce/js/tinymce/tinymce.min.js"></script>
+					<script type="text/javascript">tinymce.init({ selector: '#form-content' });</script>
+					{% endif %}
+
+					<div class="form-group mt-2">
+						{% if item.image is not empty and item.image.url %}
+						<img src="{{ item.image.url }}" class="align-middle img-fluid">
+						{% if (medium.slug != 'art') %}
+						<p style='text-align:right;'><a href='/{{medium.slug}}/remove-photo/{{item._id}}'>Delete Photo</a></p>
+						{% endif %}
+						{% else %}
+						<label for="form-image">Image</label>
+						{% endif %}
+						<input type="file" class="form-control-file" id="form-image" name="image_upload">
+					</div>
+
+					{% if user is defined and user.followers.length > 0 %}
+					<div class="form-group mt-2 text-center">
+						<label class="form-check-label">
+							<input type="checkbox" name="notify_followers" id="notify-followers" class="form-check-input" placeholder="Notify Followers">
+							<span class="orm-check-label">Notify Followers</span>
+						</label>
+					</div>
+					{% endif %}
+
+
+					<div class="form-group text-center">
+						<button type="submit" class="btn btn-action btn-submit btn-lg">Submit</button>
+					</div>
+				</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

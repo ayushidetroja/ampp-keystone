@@ -1,0 +1,190 @@
+{% extends "../layouts/default.twig" %}
+{% block intro %}
+<!--<div class="container">
+		&quot; Poem of the week &quot;
+	</div>-->
+{% endblock %}
+{% block content %}
+
+{% import "../macros/utils.twig" as utils %}
+
+<div class="container-fluid clearfix">
+	<div class="form-group float-left">
+		<div class="btn-group">
+			<button type="button" class="btn btn-default btn-sm btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+			aria-expanded="false">
+				{% if filters.genres is not empty %} {% for genre in filters.genres %} {{ genre.name }} {% if not loop.last %}, {% endif
+				%} {% endfor %} {% else %} Filter by {{medium.name}} genres {% endif %}
+			</button>
+			<div class="dropdown-menu">
+				{% if filters.genres is not empty %}
+				<a href="/{{medium.slug}}" class="dropdown-header">Filter by all {{ medium.name }} genres</a>
+				{% endif %} {% for genre in medium.genre %}
+				<a href="/{{medium.slug}}?genres={{genre.slug}}" class="dropdown-item">
+					{{ genre.name }}
+				</a>
+				{% endfor %}
+			</div>
+		</div>
+
+	</div>
+</div>
+<div class="container-fluid">
+	<div class="row justify-content-between mb-5" id="gallery">
+		{% for item in content.results %}
+		<div class="col-6 col-sm-12 col-md-6 col-lg-4 grid-item {% if loop.first %} grid-sizer {% endif %} " >
+
+			<div class="content-pad">
+				<div class="content-item {{medium.slug}} {% if not item.image.url %} noimg {% endif %}" data-medium="{{medium.name}}">
+					<div class="content-info">
+						<div class="genreTags">
+							{% for genre in item.genre %}
+							<a href="/{{medium.slug}}?genres={{genre.slug}}" class="label genreTag mr-2">{{genre.name}}</a>
+							{% endfor %}
+						</div>
+						<a href="/{{item.medium.slug}}/{{item._id}}" class="spacer">&nbsp;</a>
+						<h3>
+							<a href="/{{item.medium.slug}}/{{item._id}}">{{ item.title }}</a>
+						</h3>
+						<p>&copy;
+							<a href="/artist/{{item.author._id}}">
+								<em>{{ item.author.name.first ~' '~ item.author.name.last }}</em>
+							</a>
+						</p>
+
+						{% if item.media and item.media.url %}
+						<div class="media-wrap mx-auto">
+							{% if item.media.mimetype == 'video/mp4' %}
+								<video controls controlsList="nodownload"
+												{% if item.image.url %} poster="{{ item.image.url }}" {% endif %}
+												>
+										<source src="{{ item.media.url }}" type="video/mp4">
+											Your browser does not support the video element.
+								</video>
+							{% else %}
+
+								<audio controls controlsList="nodownload">
+										<source src="{{ item.media.url }}" type="audio/mpeg">
+									Your browser does not support the audio element.
+								</audio>
+
+							{% endif %}
+						</div>
+
+
+						{% endif %}
+
+						{% if user is defined  %}
+							<button data-id="{{item._id}}" id="{{item._id}}" data-liked="{{item.isLiked}}" class="like-button btn btn-secondary {% if item.isLiked == true %} liked {% endif %}">
+
+								{% if item.likes.length == 1 %}
+									{{ item.likes.length }} Like
+								{% else %}
+									{{ item.likes.length }} Likes
+								{% endif %}
+
+							</button>
+		        {% else %}
+							<a href="/signin">
+								<button disabled="true" class="like-button btn-secondary btn">
+									{% if item.likes.length == 1 %}
+										{{ item.likes.length }} Like
+									{% else %}
+										{{ item.likes.length }} Likes
+									{% endif %}
+								</button>
+							</a>
+		        {% endif %}
+
+					</div>
+
+					{% if item.image is not empty and item.image.url %}
+					<div class="image-wrap mx-auto align-middle">
+						<img data-src="{{ item.image.url }}" data-srcset="{{ item.image.url }}" src="/images/iconIGxxxhdpi.png"
+						 class="align-middle img-fluid"
+						 {{ utils.imgAtts(item.image.toBSON()) }}
+                />
+					</div>
+					{% endif %}
+
+				</div>
+
+			</div>
+
+
+		</div>
+		{% endfor %}
+	</div>
+
+	{% if content.totalPages > 1 %}
+		<div class="row justify-content-center mt-5">
+			<nav aria-label="Page navigation">
+				<ul class="pagination">
+					{% if content.previous %}
+						<li class="page-item">
+							<a href="?page={{ content.previous }}&size={{size}}" class="page-link" aria-label="Previous">
+								<span aria-hidden="true">&laquo;</span>
+								<span class="sr-only">Previous</span>
+							</a>
+						</li>
+						{% else %}
+						<li class="disabled page-item">
+							<a href="?page=1&size={{size}}" class="page-link" aria-label="Previous">
+								<span aria-hidden="true">&laquo;</span>
+								<span class="sr-only">Previous</span>
+							</a>
+						</li>
+					{% endif %}
+
+
+						<li class="page-item">
+							<div class="btn-group">
+
+								<button type="button" class="page-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Page {{ content.currentPage }}
+								</button>
+								<div class="dropdown-menu">
+								{% for p in content.pages %}
+									<a href="?page={% if p == '...' %}{% if i %}{{ content.totalPages }}{% else %}1{% endif %}{% else %}{{ p }}{% endif %}&size={{size}}" class="page-link">Page {{ p }}</a>
+								{% endfor %}
+								</div>
+							</div>
+					</li>
+
+					{% if content.next %}
+						<li class="page-item">
+							<a href="?page={{ content.next }}&size={{size}}" class="page-link" aria-label="Next">
+								<span aria-hidden="true">&raquo;</span>
+								<span class="sr-only">Next</span>
+							</a>
+						</li>
+					{% else %}
+						<li class="disabled page-item">
+							<a href="?page={{ content.totalPages }}&size={{size}}" class="page-link" aria-label="Next">
+								<span aria-hidden="true">&raquo;</span>
+								<span class="sr-only">Next</span>
+							</a>
+						</li>
+					{% endif %}
+				</ul>
+			</nav>
+
+			<div class="form-group">
+										 <div class="btn-group">
+														 <button type="button" class="page-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+														 aria-expanded="false">
+																		 {{ size }} per page
+														 </button>
+														 <div class="dropdown-menu">
+																		 {% for count in numberOfItems %}
+																		 <a href="?page=0&size={{count}}" class="dropdown-header">{{ count }}</a>
+																		 {% endfor %}
+														 </div>
+										 </div>
+			</div>
+
+		</div>
+	{% endif %}
+</div>
+
+{% endblock %}

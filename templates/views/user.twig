@@ -1,0 +1,318 @@
+{% extends "../layouts/default.twig" %}
+
+{% block intro %}
+	{% import "../macros/utils.twig" as utils %}
+
+	<div class="container-fluid">
+		<section class="user-profile">
+		{% if author.skin %}
+			<span id="userSkin" >
+				{% if author.skin.backgroundImage.url %}
+					<img src='{{author.skin.backgroundImage.url}}' />
+				{% endif %}
+			</span>
+			<style type="text/css">
+				#userSkin {
+					{% if author.skin.backgroundImage.url is empty %}
+						height:100%;
+					{% endif  %}
+				}
+
+				body {
+					{% if author.skin.textColor %}
+					color: {{author.skin.textColor}};
+					{% endif %}
+					{% if author.skin.backgroundColor %}
+						background: {{author.skin.backgroundColor}};
+					{% endif %}
+				}
+
+				{% if author.skin.headerBackgroundColor %}
+				.navbar {
+					background: {{author.skin.headerBackgroundColor}};
+				}
+				{% endif %}
+
+				{% if author.skin.headerTextColor %}
+				.navbar-light .navbar-text {
+					color: {{author.skin.headerTextColor}};
+				}
+				{% endif %}
+
+				{% if author.skin.menuBackgroundColor %}
+				#sidebar {
+					background: {{author.skin.menuBackgroundColor}};
+				}
+				{% endif %}
+
+				{% if author.skin.menuTextColor %}
+				#sidebar a {
+					color: {{author.skin.menuTextColor}};
+				}
+				{% endif %}
+			</style>
+		{% endif %}
+		<div class="row">
+			<div class="col-xs-12 col-sm-4 col-md-6 col-lg-6 center">
+				{% if author.image is not empty and author.image.url %}
+					<img src="{{ author.image.url }}" class="rounded-circle img-fluid headshot-wrap" />
+				{% elseif author.gender == 'female' %}
+					<img src="/images/avitar-female.png" class="rounded-circle img-fluid headshot-wrap" style="background:#fff" />
+				{% else %}
+					<img src="/images/avitar-male.png" class="rounded-circle img-fluid headshot-wrap" style="background:#fff" />
+				{% endif %}
+			</div>
+			<div class="col-xs-12 col-sm-8 col-md-6 col-lg-6 center">
+				<div>
+					{% if user is defined and user._id.toString() == author._id %}
+						<form method="post" role="chooseskin" novalidate="novalidate" class="join-form" enctype="multipart/form-data">
+							<div class="form-group">
+								<label for="join-skins" class="sr-only">Skins</label>
+								<select class="form-control" name="skin" id="join-skins" onchange="this.form.submit()">
+									<option value="">Select theme Skin</option>
+									{% for skin in skins %}
+									<option value="{{skin._id}}" {% if skin._id.toString() == author.skin._id %} selected="selected" {% endif %}>{{skin.name}}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</form>
+					{% endif %}
+				</div>
+				<h2>{{ author.name.first }} {{ author.name.last }}</h2>
+				{% if author.medium is not empty %}
+					<h6 class="mb-0">
+						<em>
+							{% for med in author.medium %}
+								{{ med.profession }}
+								{% if loop.index < (author.medium.length - 1) %},
+								{% elseif loop.index == (author.medium.length - 1) %}&amp;{% endif %}
+							{% endfor %}
+						</em>
+					</h6>
+				{% endif %}
+				<blockquote>
+					<dl>
+
+						{% if author.locale is not empty %}
+							<dt>{{author.locale}}</dt>
+						{% endif %}
+
+						<dt>&nbsp;</dt>
+
+						{% if author.website is not empty %}
+							<dd><a href="{{author.website}}" target="_blank" class="alink">{{author.website}}</a></dd>
+						{% endif %}
+
+						{% if author.phone is not empty %}
+							<dd>{{author.phone}}</dd>
+						{% endif %}
+
+						<dd>
+							{% if author.totalLikes > 1 %}
+								{{author.totalLikes}} Total Likes
+							{% else %}
+								{{author.totalLikes}} Total Like
+							{% endif %}
+						</dd>
+
+						<dd>
+								{% if author.followers.length > 1 %}
+									{{author.followers.length}} Total Followers
+								{% else %}
+									{{author.followers.length}} Total Follower
+								{% endif %}
+						</dd>
+						<dd>
+							{% if user is defined and user._id.toString() != author._id %}
+								<button data-id="{{author._id}}" id="{{author._id}}" data-followed="{{author.isFollowed}}"
+									class="follow-button btn btn-action {% if author.isFollowed == true %} btn-social {% endif %}">
+									{% if author.isFollowed == true %} Following {% endif %}
+									{% if author.isFollowed == false %} Follow {% endif %}
+								</button>
+							{% elseif user is not defined %}
+								<a href="/signin">
+									<button class="btn btn-secondary">Follow</button>
+								</a>
+							{% endif %}
+
+						</dd>
+						{% if (user is defined and author.showEmail == 'members') or author.isMe == true or author.showEmail == 'public' %}
+						<dd>
+
+								{% if author.showEmail == 'public' %}
+									{{author.email}}&nbsp;
+								{% elseif user is defined and author.showEmail == 'members' %}
+									{{author.email}}&nbsp;
+								{% elseif author.isMe == true %}
+									{{author.email}}&nbsp;
+								{% endif %}
+
+								{% if user is defined and author.isMe == true %}
+										<cite title="edit item">
+											<a href="/my-profile" role="button" class="btn btn-action btn-sm">Edit</a>
+										</cite>
+								{% endif %}
+						</dd>
+						{% endif %}
+
+					</dl>
+
+
+
+				</blockquote>
+
+			</div>
+		</div>
+	</section>
+
+</div>
+{% endblock %}
+
+{% block content %}
+	<div class="container-fluid">
+		<div class="row justify-content-between">
+			<div class="col-md-6">
+				<div class="form-group content-pad">
+					<div class="btn-group">
+						<button type="button" class="btn btn-default btn-sm btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{% if medium is not empty %}
+								{{medium.name}}
+								{% set mediumFilter = 'medium=' ~ medium.slug %}
+							{% else %}
+								Filter by mediums
+								{% set mediumFilter = '' %}
+							{% endif %}
+						</button>
+						<div class="dropdown-menu">
+							{% if medium is not empty %}
+								<a href="/artist/{{author._id}}" class="dropdown-header">Filter by all mediums</a>
+							{% endif %}
+							{% for med in mediums %}
+								<a href="/artist/{{author._id}}?medium={{med.slug}}" class="dropdown-item {% if medium is not empty and medium.slug == med.slug %}active{% endif %}">
+									{{ med.name }}
+								</a>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group content-pad">
+					<div class="btn-group ">
+						<button type="button" class="btn btn-default btn-sm btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{% if filters.genres is not empty %}
+								{% for genre in filters.genres %}
+									{{ genre.name }}
+									{% if not loop.last %},{% endif %}
+								{% endfor %}
+							{% else %}
+								{% if medium is not empty %}
+									Filter by
+									{{medium.name}}
+									genres
+								{% else %}
+									Filter by genres
+								{% endif %}
+							{% endif %}
+						</button>
+						<div class="dropdown-menu">
+							{% if filters.genres is not empty %}
+								<a href="/artist/{{author._id}}" class="dropdown-header">Filter by all genres</a>
+							{% endif %}
+							{% if filters.genres is not empty and medium is not empty %}
+								<a href="/artist/{{author._id}}?{{ mediumFilter }}" class="dropdown-header">Filter by all
+									{{ medium.name }}
+									genres</a>
+							{% endif %}
+
+							{% for genre in filters.userGenres %}
+								<a href="/artist/{{author._id}}?{{mediumFilter}}&genres={{genre.slug}}" class="dropdown-item" >
+									{{ genre.name }}
+								</a>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<div class="row justify-content-between mb-5" id="gallery">
+			{% for item in contents %}
+			<div class="col-sm-12 col-md-6 col-lg-4 grid-item {% if loop.first %} grid-sizer {% endif %} " >
+					<div class="content-pad">
+						<div class="content-item {{medium.slug}} {% if not item.image.url %} noimg {% endif %}" data-medium="{{medium.name}}">
+							<div class="content-info">
+								<div class="genreTags">
+									{% if item.state == 'published' and item.isActive == true %}
+										<span title='published'class='circleIcon'><img class='img-fluid' src="/images/round-visibility-24px.svg" /></span>
+									{% else %}
+										<span title='not published' class='circleIcon'><img class='img-fluid' src="/images/round-visibility_off-24px.svg" /></span>
+									{% endif %}
+																		
+									{% for genre in item.genre %}
+										<a href="/{{item.medium.slug}}?genres={{genre.slug}}" class="label genreTag mr-2">{{genre.name}}</a>
+									{% endfor %}
+								</div>
+								<a href="/{{item.medium.slug}}/{{item._id}}" class="spacer">&nbsp;</a>
+								<h3>
+									<a href="/{{item.medium.slug}}/{{item._id}}">{{ item.title }}</a>
+									<a href="/{{item.medium.slug}}/{{item._id}}"></a>
+									<span class="verified" style="display:none;">{{ item.isActive }}</span>
+								</h3>
+								<p>
+									<a href="/artist/{{author._id}}">
+										<em>{{ author.name.first ~' '~ author.name.last }}</em>
+									</a>
+								</p>
+
+								{% if item.media and item.media.url %}
+									<div class="media-wrap mx-auto">
+										<audio controls>
+											<source src="{{ item.media.url }}" type="audio/mpeg">
+											Your browser does not support the audio element.
+										</audio>
+									</div>
+								{% endif %}
+
+								{% if user is defined  %}
+									<button data-id="{{item._id}}" id="{{item._id}}" data-liked="{{item.isLiked}}" class="like-button btn btn-secondary {% if item.isLiked == true %} liked {% endif %}">
+
+										{% if item.likes.length == 1 %}
+											{{ item.likes.length }} Like
+										{% else %}
+											{{ item.likes.length }} Likes
+										{% endif %}
+
+									</button>
+				        {% else %}
+									<a href="/signin">
+										<button disabled="true" class="like-button btn-secondary btn">
+											{% if item.likes.length == 1 %}
+												{{ item.likes.length }} Like
+											{% else %}
+												{{ item.likes.length }} Likes
+											{% endif %}
+										</button>
+									</a>
+				        {% endif %}
+
+
+
+							</div>
+							{% if item.image is not empty and item.image.url %}
+							<div class="image-wrap mx-auto align-middle">
+								<img data-src="{{ item.image.url }}" data-srcset="{{ item.image.url }}" src="/images/iconIGxxxhdpi.png"
+								 class="align-middle img-fluid"
+								 {{ utils.imgAtts(item.image.toBSON()) }}
+		                />
+							</div>
+							{% endif %}
+						</div>
+					</div>
+
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

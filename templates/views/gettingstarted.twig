@@ -1,0 +1,196 @@
+{% extends "../layouts/default.twig" %}
+
+{% block intro %}
+	<div class="container">
+		<h1 style="margin-bottom:40px; text-align:center">GETTING STARTED</h1>
+	</div>
+{% endblock %}
+
+{% block content %}
+	<div class="container" id="accordion">
+		<div class="card">
+			<div class="card-header" id="accordionRegHead">
+				<h5 class="mb-0">
+					<button class="btn btn-link" data-toggle="collapse" data-target="#accordionReg" aria-expanded="true" aria-controls="accordionReg">
+						REGISTRATION
+					</button>
+				</h5>
+			</div>
+			<div id="accordionReg" class="collapse {% if user is not defined %} show {% endif %}" aria-labelledby="accordionRegHead" data-parent="#accordionReg">
+				<div class="card-body">
+					<ul>
+						<li>When you first log into AMPP Star, click on the side options to begin the registration process <img src="/images/GettingStarted1.png" width="100% height="100%"/>.</li>
+						<li>Next, click on the "Register" button to begin the registration <img src="/images/GettingStarted2.png" width="100% height="100%"/>.</li>
+						<li>Fill in all the relevant fields and select "Join" <img src="/images/GettingStarted3.png" width="100% height="100%"/>.</li>
+						<li>You will notice a warming message at the top of the page indicating that your account has not been verified yet <img src="/images/GettingStarted4.png" width="100% height="100%"/>.</li>
+						<li>You will get an email verification so that you can verify your account <b>Ensure you check your SPAM, Junk and Promotions folder</b> as the email may end up there <img src="/images/GettingStarted5.png" width="100% height="100%"/> <img src="/images/GettingStarted6.png" width="100% height="100%/>.</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header" id="accordionContentHead">
+				<h5 class="mb-0">
+					<button class="btn btn-link" data-toggle="collapse" data-target="#accordionContent" aria-expanded="true" aria-controls="accordionContent">
+						CONTENT UPLOAD
+					</button>
+				</h5>
+			</div>
+			<div id="accordionContent" class="collapse  {% if user is defined %} show {% endif %}" aria-labelledby="accordionContentHead" data-parent="#accordionContent">
+				<div class="card-body">
+					<ul>
+						<li>Once verified, you can begin uploading content using the side upload options <img src="/images/GettingStarted7.png" width="100% height="100%"/>.</li>
+						<li>For example, if you would like to upload photography, you would choose that option, fill in all the selections, including whether you would like it to be Public or Private, and then select "Submit"<img src="/images/GettingStarted8.png" width="100% height="100%"/></li>
+						<li>You will get a pop-up message that indicates your content has been saved <img src="/images/GettingStarted9.png" width="100% height="100%"/></li>
+						<li>For poetry, in addition to our formatting options, you can also format in Microsoft Word and then copy it over via the copy and paste functionality <img src="/images/GettingStarted10.png" width="100% height="100%"/>.</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header" id="accordionViewingHead">
+				<h5 class="mb-0">
+					<button class="btn btn-link" data-toggle="collapse" data-target="#accordionViewing" aria-expanded="true" aria-controls="accordionViewing">
+						VIEWING YOUR CONTENT AND PROFILE
+					</button>
+				</h5>
+			</div>
+			<div id="accordionViewing" class="collapse" aria-labelledby="accordionViewingHead" data-parent="#accordionViewing">
+				<div class="card-body">
+					<ul>
+						<li>On the right-side pane, click on your name to view your profile <img src="/images/GettingStarted11.png" width="100% height="100%"/>.</li>
+						<li>Registered users can add in a background picture by choosing a "theme skin" from the drop-down option <img src="/images/GettingStarted12.png" width="100% height="100%"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header" id="accordionSearchHead">
+				<h5 class="mb-0">
+					<button class="btn btn-link" data-toggle="collapse" data-target="#accordionSearch" aria-expanded="true" aria-controls="accordionSearch">
+						SEARCH CONTENT AND USERS
+					</button>
+				</h5>
+			</div>
+			<div id="accordionSearch" class="collapse" aria-labelledby="accordionSearchHead" data-parent="#accordionSearch">
+				<div class="card-body">
+					<ul>
+						<li>Select the median you’d like to search by selecting it from the main page, or the right-side pane</li>
+						<li>Once in that page, you have the option to filter by the genre</li>
+						<li>To see the bigger version of a creative work, click on the content title by hovering over it <img src="/images/GettingStarted13.png" width="100% height="100%"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header" id="accordionProfileHead">
+				<h5 class="mb-0">
+					<button class="btn btn-link" data-toggle="collapse" data-target="#accordionProfile" aria-expanded="true" aria-controls="accordionProfile">
+						VIEWING ANOTHER USER’S PROFILE
+					</button>
+				</h5>
+			</div>
+			<div id="accordionProfile" class="collapse" aria-labelledby="accordionProfileHead" data-parent="#accordionProfile">
+				<div class="card-body">
+					<ul>
+						<li>To view another user’s profile, click on the user’s name by hovering over it when searching through all the content <img src="/images/GettingStarted14.png" width="100% height="100%"/></li>
+						<li>You will be taken to their profile page where you will find everything that they have posted, including contact and location information if they have added it <img src="/images/GettingStarted15.png" width="100% height="100%"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header" id="accordionShareHead">
+				<h5 class="mb-0">
+					<button class="btn btn-link" data-toggle="collapse" data-target="#accordionShare" aria-expanded="true" aria-controls="accordionShare">
+						SHARING CONTENT
+					</button>
+				</h5>
+			</div>
+			<div id="accordionShare" class="collapse" aria-labelledby="accordionShareHead" data-parent="#accordionShare">
+				<div class="card-body">
+					<ul>
+						<li>To share, you must view the individual item/peice and then select the social media site you’d like to share to <img src="/images/GettingStarted16.png" width="100% height="100%"/>.</li>
+						<li> <b>** Please note that content with images such as Photography and Art which has not been shared before may need to be cached first (confirmed by the social media website) prior to the image preview showing** </b></li>
+						<li>To display the image, select "Share", "Cancel" and then "Share" again. This should cache the image so that the display appears</li>
+						<li>As you can see, selecting "Share’" the second time causes the image to be displayed <img src="/images/GettingStarted18.png" width="100% height="100%"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header" id="accordionLikeHead">
+				<h5 class="mb-0">
+					<button class="btn btn-link" data-toggle="collapse" data-target="#accordionLike" aria-expanded="true" aria-controls="accordionLike">
+						LIKING CONTENT
+					</button>
+				</h5>
+			</div>
+			<div id="accordionLike" class="collapse" aria-labelledby="accordionLikeHead" data-parent="#accordionLike">
+				<div class="card-body">
+					<p>Registered users also have the option to like a piece of work via the "Like" button. Currently, the user is not notified of the likes but they do see it when they log on. The notification functionality will be included in a future release of AMPP Star.</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header" id="accordionFBIGHead">
+				<h5 class="mb-0">
+					<button class="btn btn-link" data-toggle="collapse" data-target="#accordionFBIG" aria-expanded="true" aria-controls="accordionFBIG">
+						FACEBOOK AND INSTAGRAM PAGE
+					</button>
+				</h5>
+			</div>
+			<div id="accordionFBIG" class="collapse" aria-labelledby="accordionFBIGHead" data-parent="#accordionFBIG">
+				<div class="card-body">
+					<p>To connect to our Facebook and Instagram page, click on the icons found at the bottom right of the main page</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header" id="accordionPasswordHead">
+				<h5 class="mb-0">
+					<button class="btn btn-link" data-toggle="collapse" data-target="#accordionPassword" aria-expanded="true" aria-controls="accordionPassword">
+						RESETTING YOUR PASSWORD
+					</button>
+				</h5>
+			</div>
+			<div id="accordionPassword" class="collapse" aria-labelledby="accordionPasswordHead" data-parent="#accordionPassword">
+				<div class="card-body">
+					<p>If you have forgotten your password, simply select the "forgot password" button and you will be prompted to enter your email address </p>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header" id="accordionMobileHead">
+				<h5 class="mb-0">
+					<button class="btn btn-link" data-toggle="collapse" data-target="#accordionMobile" aria-expanded="true" aria-controls="accordionMobile">
+						MOBILE FRIENDLY
+					</button>
+				</h5>
+			</div>
+			<div id="accordionMobile" class="collapse" aria-labelledby="accordionMobileHead" data-parent="#accordionMobile">
+				<div class="card-body">
+					<p>Upload or browse content via your mobile device!</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="card mt-2">
+			<div class="card-header">
+				<h5 class="mb-0">
+					QUESTIONS OR CONCERNS?
+				</h5>
+				<p>email us at <em>amppstar@gmail.com</em></p>
+			</div>
+		</div>
+	</div>
+{% endblock %}

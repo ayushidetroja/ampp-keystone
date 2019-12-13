@@ -1,0 +1,14 @@
+{% extends "../../layouts/default.twig" %}
+
+{% block content %}
+	<div class="container-fluid" >
+	{% if isAccountVerified == false %}
+		<p> Your account is not verified. Please click on link provided in email to verify your account or click below link to get another email for verification.
+			<form method="post" role="resendLink" novalidate="novalidate" class="resendLink-form">
+				<input type="hidden" name="action" value="resendLink">
+				<button type="submit" class="btn btn-action btn-submit">Resend Link</button>
+			</form>
+		</p>
+	{% endif %}
+</div>
+{% endblock %}

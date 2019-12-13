@@ -1,0 +1,13 @@
+node_modules
+npm-debug.log
+.env
+.DS_Store
+.DS_Store?
+.sass-cache
+.project
+.buildpath
+thumbs.db
+Icon
+Thumbs.db
+.vscode
+yarn.lock

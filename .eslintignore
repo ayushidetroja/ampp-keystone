@@ -1,0 +1,7 @@
+public/js/bootstrap
+public/js/jquery
+
+gulpfile.js
+.eslintrc
+node_modules
+grunt

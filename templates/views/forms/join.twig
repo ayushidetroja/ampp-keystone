@@ -1,0 +1,155 @@
+{% extends "../../layouts/default.twig" %} {% block content %}
+<div class="container">
+	<form method="post" role="join" novalidate="novalidate" class="join-form" enctype="multipart/form-data">
+		<input type="hidden" name="action" value="join">
+		<style>
+			/* move this as you see fit eli */
+
+			.flexbox-container-justify {
+				display: flex;
+				justify-content: space-between;
+			}
+
+			.flexbox-container-justify .form-group {
+				width: calc(50% - 7.5px);
+			}
+
+		</style>
+		<div class="flexbox-container-justify">
+			<div class="form-group">
+				<label for="join-name-first" class="sr-only">First Name</label>
+				<input type="text" name="name.first" placeholder="First Name" id="join-name-first" value="{{form.name.first}}" class="form-control">
+			</div>
+			<div class="form-group">
+				<label for="join-name-last" class="sr-only">Last Name (optional)</label>
+				<input type="text" name="name.last" placeholder="Last Name" id="join-name-last" value="{{form.name.last}}" class="form-control">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="join-email" class="sr-only">Email</label>
+			<input type="email" name="email" placeholder="Email" id="join-email" value="{{form.email}}" class="form-control">
+		</div>
+
+		<div class="form-group">
+			<label for="join-email" class="sr-only">Email Privacy</label>
+			<div>
+				<select class="form-control" name="showEmail" id="showEmail">
+					<option value="onlyme">Only Me</option>
+					<option {% if (form.showEmail=='members' ) %} selected="selected" {% endif %} value="members">AMPP Members only</option>
+					<option {% if (form.showEmail=='public' ) %} selected="selected" {% endif %} value="public">Anyone</option>
+				</select>
+			</div>
+			<small class="form-text text-muted">Select who can see your email address?</small>
+		</div>
+
+		<div class="form-group">
+			<label for="password" class="sr-only">Change Password (optional)</label>
+			<input type="password" name="password" placeholder="Password" id="password" class="form-control">
+		</div>
+		<div class="form-group">
+			<label for="passwordConfirm" class="sr-only">Confirm your password</label>
+			<input type="password" name="passwordConfirm" id="passwordConfirm" placeholder="Confirm Password" class="form-control">
+		</div>
+
+		<div class="form-group">
+			<label for="join-gender" class="sr-only">Gender</label>
+			<select class="form-control" name="gender" id="join-gender">
+				<option value="not specified">Gender (optional)</option>
+				<option {% if (form.gender=='male' ) %} selected="selected" {% endif %} value="male">Male</option>
+				<option {% if (form.gender=='female' ) %} selected="selected" {% endif %} value="female">Female</option>
+			</select>
+		</div>
+
+		<!--<div class="form-group">
+			<label for="join-skins" class="sr-only">Skins</label>
+			<select class="form-control" name="skin" id="join-skins">
+				<option value="">Select theme Skin</option>
+				{% for skin in skins %}
+				<option value="{{skin._id}}" {% if skin._id.equals(form.skin) %} selected="selected" {% endif %}>{{skin.name}}</option>
+				{% endfor %}
+			</select>
+		</div>-->
+
+		<div class="form-group">
+			<label for="join-medium" class="sr-only">Medium</label>
+			<select multiple class="form-control" name="medium[]" id="join-medium">
+				{% for link in mediums %}
+				<option value="{{link._id}}" {% if link._id in form.medium %} selected="selected" {% endif %}>{{link.profession}}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="form-group">
+			<label for="join-locale" class="sr-only">Location (optional)</label>
+			<input type="text" name="locale" placeholder="Location" id="join-locale" value="{{form.locale}}" class="form-control">
+		</div>
+		<div class="form-group">
+			<label for="join-website" class="sr-only">Website (optional)</label>
+			<input type="text" name="website" placeholder="Website" id="join-website" value="{{form.website}}" class="form-control">
+		</div>
+		<div class="form-group">
+			<label for="join-phone" class="sr-only">Phone (optional)</label>
+			<input type="text" name="phone" placeholder="Phone" id="join-phone" value="{{form.phone}}" class="form-control">
+			<small class="form-text text-muted">*Please note phone-number is visible to registered Ampp Star users.</small>
+		</div>
+
+		<div class="form-group">
+			{% if show_edit_fields is defined and form.image is not empty and form.image.url %}
+			<img src="{{ form.image.url }}" class="rounded-circle float-left img-fluid headshot-wrap m-1 mr-2">
+			<div class="form-check">
+				<label class="form-check-label">
+					<input type="checkbox" onclick="$('#join-headshot').toggle();" value="1" class="form-check-input" name="removeProfilePic"
+					id="removeProfilePic"> Remove picture
+				</label>
+			</div>
+			{% else %}
+			<label for="join-headshot">
+				Profile Pic (optional)
+			</label>
+			{% endif %}
+			<input type="file" class="form-control-file" id="join-headshot" name="image_upload">
+		</div>
+
+
+
+		<div class="flexbox-container-justify">
+			<div class="form-group float-left">
+				<button type="submit" class="btn btn-action btn-submit">{% if (show_edit_fields is defined) %} Update {% else %} Join {% endif %}</button>
+			</div>
+			{% if (show_edit_fields is defined) %}
+			<div class="form-group float-right">
+				<button type="button" id="delete-user" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger btn-submit">Delete Account</button>
+			</div>
+			{% else %}
+			<div class="form-group float-right">
+				Already a member? <a href="/signin">Sign in now!</a>
+			</div>
+			{% endif %}
+		</div>
+
+
+		<!-- Modal -->
+		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Delete Account?</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>Are you sure, you want to delete this account?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<a href="/delete-account"><button type="button" class="btn btn-danger" >Yes, Delete</button></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+</div>
+{% endblock %}

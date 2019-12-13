@@ -1,0 +1,31 @@
+
+@each $color, $value in $theme-colors {
+  .btn-#{$color} {
+    @include color-yiq($value);
+    background-color:$value;
+    border-color:$value;
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .alert-#{$color} {
+    @include alert-variant(theme-color-level($color, -10), theme-color-level($color, -9), theme-color-level($color, 6));
+  }
+}
+
+
+// Generate `.bg-*` color utilities
+@each $color, $value in $theme-colors {
+  @include bg-variant('.bg-#{$color}', $value);
+}
+
+
+.btn {
+  padding:.2rem;
+  @include transition(all 0.4s);
+}
+
+
+.btn-social {
+  @include button-variant(theme-color-level(social, 6), theme-color-level(social, 6))
+}

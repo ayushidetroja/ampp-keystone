@@ -1,0 +1,181 @@
+{% extends "../layouts/default.twig" %}
+
+{% block content %}
+
+	{% import "../macros/utils.twig" as utils %}
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<article class="center-block">
+					{% if item is empty %}
+						<h2><a href="/{{medium.slug}}" >Search more {{medium.name}}</a></h2>
+					{% else %}
+						<header>
+							<h1>{{ item.title }}
+								{% if user is defined and item.isMine == true %}
+								<a href="/{{medium.slug}}/edit/{{item._id}}"= role="button" class="btn btn-action btn-sm mr-1">edit</a>
+								<a href="/{{medium.slug}}/delete/{{item._id}}"= role="button" class="btn btn-danger btn-sm">delete</a>
+								{% endif %}
+							</h1>
+							<h5> {{item.medium.name}}</h5>
+							{% if item.state == 'published' %}
+								Published
+								{% if item.publishedDate %}
+									{{ item.publishedDate|date("M d, Y") }}
+								{% endif %}
+							{% elseif item.state == 'draft' %}
+								Private
+							{% else %}
+								{{item.state}}
+							{% endif %}
+
+							{% set hashTags = [] %}
+							{% if item.genre %}
+								in
+								{% for cat in item.genre %}
+									{% set hashTags = hashTags|merge([cat.name]) %}
+									<a href="/{{item.medium.name}}?genres={{ cat._id }}">{{ cat.name }}</a>
+									{% if not loop.last %}, {% endif %}
+								{% endfor %}
+							{% endif %}
+							by
+							<a href="/artist/{{item.author._id}}">
+	                <p><small> {{ item.author.name.first ~' '~ item.author.name.last }} </small></p>
+							</a>
+						</header>
+						<div class="post" style="position:relative;">
+                              {% if item.media.url %}
+								<div class="media-wrap">
+									{% if item.media.mimetype == 'video/mp4' %}
+										<video controls controlsList="nodownload"
+														{% if item.image.url %} poster="{{ item.image.url }}" {% endif %}
+														>
+												<source src="{{ item.media.url }}" type="video/mp4">
+													Your browser does not support the video element.
+										</video>
+									{% else %}
+
+										<audio controls controlsList="nodownload">
+												<source src="{{ item.media.url }}" type="audio/mpeg">
+											Your browser does not support the audio element.
+										</audio>
+										{% if item.image.url %}
+												<img src="{{ item.image.url }}" class="img-fluid"
+												{{ utils.imgAtts(item.image.toBSON()) }}
+												 />
+										{% endif %}
+
+									{% endif %}
+								</div>
+							{% elseif item.image.url %}
+								<div class="post-img">
+										<img src="{{ item.image.url }}" id="imgSrc"class="img-fluid"
+										{{ utils.imgAtts(item.image.toBSON()) }}
+										 />
+										 <small class="copyrightWatermark">
+										&copy; {{ item.author.name.first ~' '~ item.author.name.last }}
+							</small>
+								</div>
+							{% endif %}
+							
+							
+							{% if item.content.full is not empty %}
+							<div style="margin-top:10px">{{ item.content.full | raw }}</div>
+							 <small class="copyrightWatermark " style="display:none;">
+										&copy; {{ item.author.name.first ~' '~ item.author.name.last }}</small>
+							{% endif %}
+
+						</div>
+							{% set listLikeUser = [] %}
+							{% for User in item.likeUser %}
+							
+									{% set listLikeUser = listLikeUser|merge([User.name.first ~"  "~ User.name.last]) %}
+								
+							{% endfor %}
+
+
+						
+						
+							
+						 
+						<div style="margin:10px 0;">
+							<div class="col-xs-12 col-sm-6 center">
+								<button class="sharer button ml-1 mb-1 btn btn-social btn-sm" data-sharer="twitter" data-title="{{item.title | striptags}}" data-hashtags="{{ hashTags | join}}" data-url="{{full_url}}">Twitter</button>
+								<button class="sharer button ml-1 mb-1 btn btn-social btn-sm" data-sharer="facebook" data-url="{{full_url}}">Facebook</button>
+								<button class="sharer button ml-1 mb-1 btn btn-social btn-sm" data-sharer="googleplus" data-url="{{full_url}}">Google+</button>
+								<button class="sharer button ml-1 mb-1 btn btn-social btn-sm" data-sharer="pinterest" data-url="{{full_url}}">Pinterest</button>
+							</div>
+							<div class="userlike-info">
+						{% if item.likeUser|length != 0   %}<div class="userlike"><svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="m511.917969 256c0-141.386719-114.597657-256-255.957031-256-141.363282 0-255.960938 114.613281-255.960938 256s114.597656 256 255.960938 256c141.359374 0 255.957031-114.613281 255.957031-256zm0 0" fill="#407fff"/><path d="m393.070312 39.800781c46.359376 46.332031 75.035157 110.359375 75.035157 181.082031 0 141.386719-114.597657 256-255.960938 256-50.445312 0-97.472656-14.601562-137.109375-39.800781 46.3125 46.289063 110.277344 74.917969 180.925782 74.917969 141.359374 0 255.957031-114.613281 255.957031-256 0-90.933594-47.40625-170.785156-118.847657-216.199219zm0 0" fill="#406aef"/><path d="m373.394531 247.140625c0-13.941406-11.296875-25.238281-25.234375-25.238281h-35.769531c10.332031-25.851563 11.085937-47.046875 11.019531-53.835938-.007812-.746094.160156-3.390625.160156-3.976562v-1.175782c-.75-24.550781-8.265624-32.066406-17.917968-35.644531-9.898438 0-17.921875 8.019531-17.921875 17.917969v1.792969c-.097657 6.136719-8.71875 18.796875-8.71875 18.796875l-65.757813 66.515625-1.109375 1.363281-20 53.484375 20 82.929687c0 2.515626 2.039063 4.550782 4.550781 4.550782h123.800782c8.421875 0 15.582031-6.140625 16.855468-14.46875 4.867188-31.835938 16.042969-105.710938 16.042969-113.011719zm0 0" fill="#e3faff"/><path d="m197.863281 384.734375h-45.058593c-7.886719 0-14.28125-6.394531-14.28125-14.285156v-135.28125c0-7.890625 6.394531-14.28125 14.28125-14.28125h45.058593c7.886719 0 14.28125 6.390625 14.28125 14.28125v135.28125c0 7.890625-6.394531 14.285156-14.28125 14.285156zm0 0" fill="#48d8ff"/><path d="m197.863281 357.824219h-45.058593c-7.886719 0-14.28125-6.394531-14.28125-14.285157v26.910157c0 7.890625 6.394531 14.285156 14.28125 14.285156h45.058593c7.886719 0 14.28125-6.394531 14.28125-14.285156v-26.910157c0 7.890626-6.394531 14.285157-14.28125 14.285157zm0 0" fill="#43c5ff"/><path d="m348.160156 221.902344h-4.628906c-.234375 2.21875-.589844 5.125-1.035156 8.570312-8.476563 65.542969-64.273438 114.621094-130.351563 114.621094v24.972656c0 2.515625 2.039063 4.554688 4.550781 4.554688h123.800782c8.421875 0 15.582031-6.144532 16.855468-14.46875 4.867188-31.835938 16.042969-105.710938 16.042969-113.015625 0-13.9375-11.296875-25.234375-25.234375-25.234375zm0 0" fill="#ccf4ff"/></svg></div>
+						{% endif %}	<div id="likeContent" style="cursor:pointer;">
+								{% for user in item.likeUser[:2] %}
+                                   {{user.name.first }} {{user.name.last}}{% if not loop.last %},{% endif %}
+                           {% endfor %}{% if item.likeUser|length != 0 and item.likeUser|length != 1  and   item.likeUser|length != 2 %} and {{item.likeUser|length - 2}} other {% endif%} 
+							</div>
+							<div id="another-element" style="display:none;">
+					        {% for user in item.likeUser %}
+                                    <a class="userlikesbox" href="/artist/{{user._id}}">{{user.name.first }} {{user.name.last}} </a><br>
+                          
+						{% endfor %}
+							</div>
+                        </div>
+
+							<div class="col-xs-12 col-sm-6 center">
+								{% if user is defined  %}
+									<button data-id="{{item._id}}" id="{{item._id}}" data-liked="{{item.isLiked}}" class="like-button btn btn-action {% if item.isLiked == true %} btn-social {% endif %}">
+
+										{% if item.likes.length <= 1 %}
+											<span> {{ item.likes.length }} Like </span>
+										{% endif %}
+										{% if item.likes.length >= 2 %}
+											<span> {{ item.likes.length }} Likes </span>
+										{% endif %}
+
+									</button>
+								{% endif %}
+
+								{% if user is not defined  %}
+									<a href="/signin">
+										<button disabled="true" class="btn-secondary btn">
+											{% if item.likes.length <= 1 %}
+												<span> {{ item.likes.length }} Like </span>
+											{% endif %}
+											{% if item.likes.length >= 2 %}
+												<span> {{ item.likes.length }} Likes </span>
+											{% endif %}
+										</button>
+									</a>
+								{% endif %}
+							</div>
+						</div>
+
+					{% endif %}
+				</article>
+			</div>
+		</div>
+	</div>
+	
+
+
+
+		<script>
+	var imageUrl= $("#imgSrc").attr('src');
+	if(!imageUrl)
+	{
+		$('.copyrightWatermark').css({'display':'block'});
+	}
+	
+	$( "#likeContent" ).click(function() {     
+		$( "#another-element" ).slideToggle( );
+		return false;
+	});
+	
+	 $('body').on('click', ':not(#another-element)', function(){
+      $('#another-element').hide();
+    });
+	
+	
+	
+	</script>
+{% endblock %}

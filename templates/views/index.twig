@@ -1,0 +1,36 @@
+{% extends "../layouts/default.twig" %}
+
+{% block content %}
+
+	<div id="homepage" class="row container-fluid align-items-center justify-content-center m-auto" >
+
+		{% for med in mediums %}
+		<div class="col-md-3 col-sm-12" >
+			<div class="content-pad">
+				{% if med.mp4 is not empty and med.mp4.url is not empty %}
+				<div class="categoryBox rounded" >
+				<a href="/{{med.slug}}" class="centerer">
+					<video autoplay muted loop alt="{{med.name}}">
+						<source src="{{med.mp4.url}}" type="video/mp4" >
+					</video>
+					<span class="caption"><span class="sr-only">{{med.caption}}</span></span>
+				</a>
+				</div>
+				{% else %}
+					<div class="categoryBox rounded" style="background-image:url('{{med.image.url}}');">
+							<a href="/{{med.slug}}" class="centerer">
+								<span class="centerer">
+								<img class="icon" src="{{med.logo.url}}" alt="{{med.name}}">
+								<span class="caption"><span class="sr-only">{{med.caption}}</span></span>
+								</span>
+							</a>
+						</div>
+				{% endfor %}
+
+			</div>
+		</div>
+		{% endfor %}
+
+	</div>
+
+{% endblock %}

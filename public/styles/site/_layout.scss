@@ -1,0 +1,167 @@
+a:hover,a:active {color:$orange;  }
+
+body {
+  background: transparent url('/images/logo_large_bg.png') no-repeat top left;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/logo_large_bg.png', sizingMethod='image');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/logo_large_bg.png', sizingMethod='image')";
+}
+
+#App {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  align-content: space-between;
+  width: 100%;
+  height:100%;
+  min-height: 100vh;
+  padding:75px 0 0 0;
+}
+#header {
+  flex-grow: 0;
+}
+#master { flex-grow: 1;
+  padding:75px 0 0 0;
+  min-height: calc(100vh - 38px)
+}
+
+#sidebar {
+  color:#fff;
+  background:#0a1622;
+  align-self:flex-start;
+  min-height: calc(100vh - 60px);
+  margin-top:15px;
+}
+
+#footer {
+  flex-grow: 0;
+  position: relative;
+  background-color: #0a1622;
+  color: #fff;
+  font-size: 75%;
+  vertical-align: middle;
+}
+
+.footer-inner {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+}
+
+#content {
+  min-height:100%;
+  margin:auto;
+  margin-top:15px;
+}
+@media (min-width: 1000px) {
+  #content {}
+}
+.contentPage #content a:not(.btn) { color:$orange;}
+
+@media (min-width: 900px) {
+  #homepage { padding-top: calc(50vh - 220px); }
+}
+
+.home #master {
+  vertical-align: middle;
+  background: #132435 url('/images/landing-bg.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/landing-bg.jpg', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/landing-bg.jpg', sizingMethod='scale')";
+}
+
+#userSkin {
+  position: fixed;
+  display: block;
+  top:0; left:0;
+  width:100%;
+}
+#userSkin img {
+  -webkit-mask-image:-webkit-gradient(linear, left 80%, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+  width:100%;
+}
+
+.navbar {
+    background: #fff;
+   box-shadow:2px 0 4px #ccc; }
+
+.navbar a { color:inherit; }
+
+
+@media (max-width: 576px) {
+  .navbar-text {
+       display: none !important;
+    }
+}
+
+.navbar-collapse {
+   width:0;
+   left:0;
+   top:-14px;
+}
+.navbar-collapse.collapsing {
+   width:auto;
+   -webkit-transition: width 0.3s ease;
+   -o-transition: width 0.3s ease;
+   -moz-transition: width 0.3s ease;
+   transition: width 0.3s ease;
+}
+.navbar-collapse.show {
+  width:auto;
+   -webkit-transition: width 0.3s ease-in;
+   -o-transition: width 0.3s ease-in;
+   -moz-transition: width 0.3s ease-in;
+   transition: width 0.3s ease-in;
+}
+
+.menuBtn {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: left;
+  color: #FABC71;
+  cursor: pointer;
+}
+
+.topLogo {
+  height: 50px;
+}
+
+@media (min-width: 576px) {
+  .socialIcons {
+    position: absolute;
+    top: 8px;
+    right: 4px;
+  }
+}
+
+.socialIcons img {
+  height: 20px;
+  margin: 2px;
+}
+
+.verify-email {
+  z-index: 9999;
+  width: 100%;
+  text-align: center;
+}
+
+.mt-50 {
+  top: 50px;
+}
+
+
+/* Microsoft Edge issue: https://github.com/verlok/lazyload */
+img[data-src],
+img[data-srcset] {
+  display: block;
+  min-height: 1px;
+}
+/* Prevents img without src to appear */
+img:not([src]) {
+    visibility: hidden;
+}
