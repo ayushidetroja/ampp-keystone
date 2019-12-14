@@ -1,28 +1,32 @@
 {% extends "../../layouts/default.twig" %}
 
 {% block content %}
-	<div class="container-fluid" >
-		<form method="post" role="signin" novalidate="novalidate" class="signin-form">
-			<input type="hidden" name="action" value="signin">
-			<div class="form-group">
-				<label for="signin-email" class="sr-only">Email</label>
-				<input type="email" name="signin_email" placeholder="Email" id="signin-email" class="form-control">
-			</div>
-			<div class="form-group">
-				<label for="signin-password" class="sr-only">Password</label>
-				<input type="password" name="signin_password" placeholder="Password" id="signin-password" value="" class="form-control">
-			</div>
-	<div>
-	<button type="submit" class="btn btn-action btn-submit">Sign in</button>
-		<a class="btn btn-social btn-facebook sign-fb" type="button" href="/auth/facebook">
-   <img src="/images/iconFBxhdpi.png" alt="Facebook"/> Sign in with Facebook
-  	</a>
-	</div>
-		
-	</form>
+{% if error %}
+<div class="alert alert-danger" role="alert">
+  {{error}}
+</div>
+{% endif %}
 
-	<p><a href="/forgot-password">Forgot password?</a>
-	<p>Not a member? <a href="/join">Join now!</a>
-	</p>
+<div class="container container-custom">
+    <form method="post" role="signin" novalidate="novalidate" class="signin-form">
+            <input type="hidden" name="action" value="signin">
+            <div class="form-group">
+                <label for="signin-email" class="sr-only">Email</label>
+                <input type="email" name="signin_email" placeholder="Email" id="signin-email" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="signin-password" class="sr-only">Password</label>
+                <input type="password" name="signin_password" placeholder="Password" id="signin-password" value="" class="form-control">
+            </div>
+        <button type="submit" class="btn btn-action btn-submit form-control">Sign in</button>
+    </form>
+    <p class="joinp"><a href="/forgot-password">Forgot password?</a></p>
+	<p class="joinp-color">Log in via facebook</p>
+	<div style="text-align: center;" class="form-group"> 
+	<a class="btn btn-social btn-facebook sign-fb  form-control"  href="/auth/facebook">
+   <img src="/images/iconFBxhdpi.png" alt="Facebook"/> Sign in with Facebook
+  	</a></div>
+    <p class="joinp">Not a member? <a href="/join">Join now!</a>
+    </p>
 </div>
 {% endblock %}

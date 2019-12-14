@@ -17,7 +17,11 @@ module.exports = function(req, res) {
 	locals.form = req.body;
 
 	//eventually, you can only see posts that YOU made
-
+	console.log("query", req);
+	// req.flash(
+	// 	"error",
+	// 	"Facebook not linked with the email. Please login in with email and password"
+	// );
 	//move error checking into here
 	view.on(
 		"post",

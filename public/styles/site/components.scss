@@ -411,6 +411,19 @@ blockquote.post-content {
 	color: white !important;
 	margin-left: 3%;
 }
+.container-custom {
+	margin-top: 100px;
+	max-width: 512px !important;
+}
+.joinp {
+	text-align: center;
+	margin-top: 10px;
+}
+.joinp-color {
+	text-align: center;
+	margin-top: 10px;
+	color: #989599;
+}
 @media only screen and (max-width: 600px) {
 	.content-info h3,
 	.content-info p {
