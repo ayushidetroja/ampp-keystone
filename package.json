@@ -40,7 +40,7 @@
     "keystone": "^4.0.0-beta.8",
     "keystone-email": "^1.1.0",
     "keystone-storage-adapter-s3": "2.0.0",
-    "mongo-express": "^0.51.2",
+    "mongo-express": "^0.54.0",
     "mongoose-validator": "^2.0.2",
     "node-sass-middleware": "0.11.0",
     "nodemailer": "^4.6.4",
